@@ -7,7 +7,7 @@ infile = 'p04_input.txt'
 
 infile_path = os.path.join(here, project, infile)
 
-class PuzzleBoard:
+class BingoBoard:
     column_count = 0
     row_count = 0
     tiles = [[]]
@@ -88,7 +88,7 @@ def part1():
         for row in gb.split('\n'):
             temp_gameboard.append(num_re.findall(row))
 
-        gameboards.append(PuzzleBoard(temp_gameboard))
+        gameboards.append(BingoBoard(temp_gameboard))
 
     for play in play_nums:
         for board in gameboards:
@@ -122,7 +122,7 @@ def part2():
         for row in gb.split('\n'):
             temp_gameboard.append(num_re.findall(row))
 
-        gameboards.append(PuzzleBoard(temp_gameboard))
+        gameboards.append(BingoBoard(temp_gameboard))
 
     losing_board_count = len(gameboards)
 
