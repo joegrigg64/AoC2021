@@ -1,8 +1,9 @@
 import os
 import re
+import datetime
 
 here = os.path.abspath(os.path.curdir)
-project = 'AoC2021'
+project = 'aoc'
 infile = 'p05_input.txt'
 # infile = 'p05_testinput.txt'
 
@@ -186,8 +187,14 @@ def part2():
     return overlap_over2
 
 if __name__ == "__main__":
+    now1 = datetime.datetime.now()
     answer1 = part1()
+    future1 = datetime.datetime.now()
     print('part 1 answer: {}'.format(answer1))
+    print('took {}'.format(future1 - now1))
 
+    now2 = datetime.datetime.now()
     answer2 = part2()
+    future2 = datetime.datetime.now()
     print('part 2 answer: {}'.format(answer2))
+    print('took {}'.format(future2 - now2))
