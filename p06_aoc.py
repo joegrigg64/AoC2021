@@ -58,6 +58,7 @@ def part2():
     counts = (count for _, count in fish_ages.items())
     for c in counts:
         num_fish += c
+
     return num_fish
 
 
