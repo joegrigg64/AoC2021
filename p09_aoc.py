@@ -55,70 +55,46 @@ def part2():
     with open(infile_path, 'r') as f:
         lines = [[int(i) for i in [*line.strip()]] for line in f.readlines()]
 
-    # directions return True if value exists and is higher, or doesn't exist (assumed higher since checking val is on an edge)
-    def down(i, j, points=None):
+    def direction(dir, i, j, points=None):
+        '''slightly slower than separate methods, but less code'''
+        if dir == 'u':
+            if i == 0:
+                return True
+            (i_n, j_n) = (i - 1, j)
+        elif dir == 'l':
+            if j == 0:
+                return True
+            (i_n, j_n) = (i, j - 1)
+        elif dir == 'r':
+            (i_n, j_n) = (i, j + 1)
+        elif dir == 'd':
+            (i_n, j_n) = (i + 1, j)
         try:
-            is_higher = lines[i+1][j] > lines[i][j]
-            if points is not None and lines[i+1][j] < 9 and [i+1, j] not in points:
+            is_higher = lines[i_n][j_n] > lines[i][j]
+            if points is not None and lines[i_n][j_n] < 9 and [i_n, j_n] not in points:
                 global basin
                 basin += 1
-                points.append([i+1, j])                    
-                basinBuilder(i+1, j, points)
+                points.append([i_n, j_n])                    
+                basinBuilder(i_n, j_n, points)
 
             return is_higher
         except:
             return True
-
-    def left(i, j, points=None):
-        if j == 0:
-            return True
-
-        is_higher = lines[i][j-1] > lines[i][j]
-        if points is not None and lines[i][j-1] < 9 and [i, j-1] not in points:
-            global basin
-            basin += 1
-            points.append([i, j-1])                
-            basinBuilder(i, j-1, points)
-
-        return is_higher
-    
-    def right(i, j, points=None):
-        try:
-            is_higher = lines[i][j+1] > lines[i][j]
-            if points is not None and lines[i][j+1] < 9 and [i, j+1] not in points:
-                global basin
-                basin += 1
-                points.append([i, j+1])
-                basinBuilder(i, j+1, points)
-
-            return is_higher
-        except:
-            return True
-
-    def up(i, j, points=None):
-        if i == 0:
-            return True
-
-        is_higher = lines[i-1][j] > lines[i][j]
-        if points is not None and lines[i-1][j] < 9 and [i-1, j] not in points:
-            global basin
-            basin += 1
-            points.append([i-1, j])
-            basinBuilder(i-1, j, points)
-
-        return is_higher
 
     def basinBuilder(i, j, points):
-        up(i, j, points)
-        left(i, j, points)
-        right(i, j, points)
-        down(i, j, points)
+        direction('u', i, j, points)
+        direction('l', i, j, points)
+        direction('r', i, j, points)
+        direction('d', i, j, points)
 
     basins = []
 
     for i in range(len(lines)):
         for j in range(len(lines[i])):
-            if up(i, j) and left(i, j) and right(i, j) and down(i, j):
+            if direction('u', i, j) and \
+                direction('l', i, j) and \
+                direction('r', i, j) and \
+                direction('d', i, j):
 
                 global basin
                 basin = 1
