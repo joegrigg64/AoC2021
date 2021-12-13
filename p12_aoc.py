@@ -14,20 +14,28 @@ caves = {}
 small_visited = []
 small_visited_twice = []
 paths = 0
+good_paths = []
 # pathing = [] # restart each run
 
-def follow(next):
-    
+def follow(next, psf):
+    n_psf = psf.copy()
+    n_psf.append(next)
     global caves
     global small_visited
     global paths
     global small_visited_twice
+    global good_paths
     # global pathing
 
     if next == 'end':
-        paths += 1
-        # print(f'stopped at {next}')
-        return
+        nn_psf = n_psf.copy()
+        # nn_psf.append('end')
+        if nn_psf not in good_paths:
+            paths += 1
+            good_paths.append(n_psf.copy())
+            # print(f'stopped at {next}')
+            # print(nn_psf)
+            return
     # print(f'at: {next}')
     if next.islower():
         if next in small_visited:
@@ -42,25 +50,29 @@ def follow(next):
     # print(f'next paths to check: {caves[next]}')
     placement = len(small_visited)
     # print(f'small_visited: {small_visited}')
-    for N in caves[next]:
-        print(f'before removals: {small_visited}')
-        small_visited = small_visited[:placement]
-        for small_check in small_visited_twice:
-            count = 0
-            for small in small_visited:
-                if small == small_check:
-                    count += 1
-            print(count)
-            if count == 1:
-                print(f'removed {small_check}')
-                print(small_visited)
-                small_visited_twice.remove(small_check)
-                print(small_visited, small_visited_twice)
+    try:
+        for N in caves[next]:
+            # print(n_psf)
+            # print(f'before removals: {small_visited}')
+            small_visited = small_visited[:placement]
+            for small_check in small_visited_twice:
+                count = 0
+                for small in small_visited:
+                    if small == small_check:
+                        count += 1
+                # print(count)
+                if count == 1:
+                    # print(f'removed {small_check}')
+                    # print(small_visited)
+                    small_visited_twice.remove(small_check)
+                    # print(small_visited, small_visited_twice)
 
-        
-        if N not in small_visited_twice:
-            # print(f'going to {N} from {next}')
-            follow(N)
+            
+            if N not in small_visited_twice:
+                # print(f'going to {N} from {next}')
+                follow(N, n_psf.copy())
+    except:
+        ''''''
     return
 
 
@@ -90,9 +102,10 @@ def day12():
                 elif B != 'start' and after[i] != 'end' and B not in caves[after[i]]:
                     caves[after[i]].append(B)
 
-    # print(caves)
+    print(caves)
 
     for C in caves['start']:
+        path_so_far = ['start']
         global pathing
 
         small_visited_twice = []
@@ -102,7 +115,9 @@ def day12():
             small_visited = []
         # print(f'at front with {C}')
         placement = len(small_visited)
+        
         for N in caves[C]:
+            
             small_visited = small_visited[:placement]
             for small_check in small_visited_twice:
                 count = 0
@@ -114,7 +129,7 @@ def day12():
 
             # print(f'deeping into {N}')
             # pathing = ['start', N]
-            follow(N)
+            follow(N, path_so_far.copy())
         # follow(C)
         # print(pathing)
 
@@ -124,7 +139,25 @@ def day12():
 
 
 
-
+    # print(len(good_paths))
+    # print(good_paths)
+    # copy_good_paths = []
+    # for path in good_paths:
+    #     if path not in copy_good_paths:
+    #         copy_good_paths.append(path)
+    # print(len(copy_good_paths))
+    all_starts = []
+    new_good_paths = []
+    for P in caves['start']:
+        all_starts.append(['start', P])    
+    for path in good_paths:
+        print(f'compare {path[:2]} against {all_starts}')
+        print(path[:2] in all_starts)
+        if path[:2] in all_starts:
+            new_good_paths.append(path)
+    print(len(new_good_paths))
+            
+    
     return (paths, 'not done')
 
 
